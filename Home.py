@@ -1,11 +1,10 @@
 import streamlit as st
 
-#title = "Order Matching Simulator"
+title = "Order Matching Simulator"
 st.set_page_config(page_title=title)
 st.title(title)
 
 st.markdown("""
-## Order Matching Simulator
 
 The Order Matching Simulator demonstrates how a basic order matching engine works in financial markets. It allows you to:
 
