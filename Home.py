@@ -1,6 +1,6 @@
 import streamlit as st
 
-title = "Opticonomy Market Maker - Crypto Statistics and Market Making Tool"
+#title = "Order Matching Simulator"
 st.set_page_config(page_title=title)
 st.title(title)
 
@@ -41,14 +41,6 @@ The simulator comes with a pre-populated order book for OPTI token with the foll
    * View current bids (buy orders) and asks (sell orders)
    * Monitor best bid and ask prices
    * Track order history and execution status
-
-### Other Tools
-
-* **Token Top Movers** - displays top movers within a selected exchange for a given time interval
-* **Token PnL Reporting** - reports of profit and loss (PnL) of actual and simulated trading              
-* **Token Correlations** - correlations between different token assets
-* **Token Pairs / Stat Arb Backtests** - simulation of crypto assets from selected exchanges
-* **Market Making** - automated market making strategies for crypto assets
 
 ## References
 * Learn about [order matching engines](https://www.investopedia.com/terms/m/matching-engine.asp)

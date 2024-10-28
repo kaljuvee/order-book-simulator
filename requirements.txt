@@ -1,7 +1,3 @@
 plotly
 streamlit
-ccxt
-PyYAML
-scikit-learn
-reportlab
 python-dotenv
