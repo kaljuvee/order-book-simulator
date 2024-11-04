@@ -2,7 +2,7 @@ import ccxt
 import time
 from datetime import datetime, timezone, timedelta
 import pandas as pd
-from util import exchange_factory, db_util
+from utils import exchange_factory, db_util
 from pprint import pprint
 
 exchanges = exchange_factory.exchanges
@@ -60,23 +60,14 @@ def place_stop_loss(exchange, symbol, amount, stop_price, exit_discount=0.001, t
         params = {
             'stopPrice': adjusted_stop_price,  # This is where Binance expects the stopPrice
             'type': 'STOP_LOSS_LIMIT',
-            'trailingDelta': trailing_delta  # Adjust if necessary, depending on the exchange's requirements
+            'trailingDelta': 1.0  # 1% trailing stop for Binance
         }
-<<<<<<< HEAD
-        trailing_delta = 1.0 # 1% for binance
-        #stop_order_params['trailingDelta'] = trailing_delta
-        print('adjusted stop order params: ', stop_order_params)
-        # Attempt to create a STOP_LOSS_LIMIT order
-        stop_exit_order = exchange.create_order(symbol=symbol, type='STOP_LOSS_LIMIT', side='sell',
-                                                amount=amount, price=adjusted_limit_price, params = stop_order_params)
-=======
 
         print(f"Placing stop loss order for {symbol} with params: {params}")
 
         # Place the stop loss limit order
-        stop_exit_order = exchange.create_order(symbol, 'limit', 'sell', amount, adjusted_limit_price, params=params)
-        
->>>>>>> 523ca3d76054f75a0b54a407f21eef200a86deb4
+        stop_exit_order = exchange.create_order(symbol=symbol, type='STOP_LOSS_LIMIT', side='sell',
+                                              amount=amount, price=adjusted_limit_price, params=params)
         return stop_exit_order
 
     except Exception as e:

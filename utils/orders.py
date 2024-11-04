@@ -3,7 +3,6 @@ import time
 from datetime import datetime, timezone, timedelta
 import pandas as pd
 from utils.exchange_factory import exchanges
-from utils.db_util import db_util
 
 class OrderManager:
     def __init__(self, exchange):
@@ -37,38 +36,51 @@ class OrderManager:
         print("All orders successfully placed.")
         return True
 
-    def place_limit_order(exchange, symbol, side, amount, price, reason='entry', max_wait_time=60, check_interval=5, check_order_status=True):
+    def place_limit_order(self, symbol, side, amount, price, check_order_status=True):
+        """
+        Places a limit order on the exchange.
+        
+        Args:
+            symbol (str): Trading pair symbol (e.g., 'BTC/USD')
+            side (str): 'buy' or 'sell'
+            amount (float): Amount to trade
+            price (float): Limit price
+            check_order_status (bool): Whether to wait and check order status
+        
+        Returns:
+            dict: Order response from exchange or None if failed
+        """
         if side not in ['buy', 'sell']:
-            print("Invalid side. Please choose 'buy' or 'sell'.")
-            return None
+            error_msg = "Invalid side. Please choose 'buy' or 'sell'."
+            print(error_msg)
+            raise ValueError(error_msg)
 
         try:
             print(f"Attempting to place a {side} limit order for {symbol} with amount: {amount} and price: {price}")
-            order = exchange.create_order(symbol, 'limit', side, amount, price)
+            order = self.exchange.create_order(symbol, 'limit', side, amount, price)
             order_id = order.get('id')
 
             if not order_id:
-                print("Failed to retrieve order ID.")
-                return None
+                error_msg = "Failed to retrieve order ID from exchange response"
+                print(error_msg)
+                raise ValueError(error_msg)
 
-            print(f"Order {order_id} for {reason} placed, checking for fill status...")
+            print(f"Order {order_id} placed successfully")
             
             if check_order_status:
-                print("checking for fill status...")
-                start_time = time.time()
-                while time.time() - start_time < max_wait_time:
-                    order_status = exchange.fetch_order(order_id, symbol)
-                    if order_status['status'] == 'closed':
-                        print(f"Order {order_id} for {reason} is filled.")
-                        return order_status
-                    time.sleep(check_interval)
+                print("Checking order status...")
+                order_status = self.exchange.fetch_order(order_id, symbol)
+                print(f"Order status: {order_status['status']}")
+                return order_status
 
-            print(f"Order {order_id} for {reason} was not filled within {max_wait_time} seconds.")
-            return None
+            return order
 
         except Exception as e:
-            print(f"Error occurred while placing the limit order: {e}, reason: {reason}")
-            return None
+            error_msg = f"Exchange error: {str(e)}"
+            if hasattr(e, 'args') and len(e.args) > 0:
+                error_msg += f"\nDetails: {e.args[0]}"
+            print(f"Error occurred while placing limit order: {error_msg}")
+            raise Exception(error_msg)
 
     def handle_stop_loss(exchange, symbol, amount, stop_price, limit_price, exit_discount = 0.001):
         """
