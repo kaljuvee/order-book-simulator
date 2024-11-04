@@ -1,3 +1,5 @@
-plotly
 streamlit
+plotly
+pandas
+ccxt
 python-dotenv
